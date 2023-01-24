@@ -99,6 +99,7 @@ export interface QRCode {
 }
 
 export type Options = {
+  id?: string;
   type?: DrawType;
   width?: number;
   height?: number;

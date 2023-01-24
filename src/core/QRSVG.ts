@@ -139,6 +139,7 @@ export default class QRSVG {
 
       if (gradientOptions || color) {
         this._createColor({
+          id: options.id,
           options: gradientOptions,
           color: color,
           additionalRotation: 0,
@@ -171,10 +172,11 @@ export default class QRSVG {
     const dot = new QRDot({ svg: this._element, type: options.dotsOptions.type });
 
     this._dotsClipPath = document.createElementNS("http://www.w3.org/2000/svg", "clipPath");
-    this._dotsClipPath.setAttribute("id", "clip-path-dot-color");
+    this._dotsClipPath.setAttribute("id", "clip-path-dot-color-" + options.id || "1");
     this._defs.appendChild(this._dotsClipPath);
 
     this._createColor({
+      id: options.id,
       options: options.dotsOptions?.gradient,
       color: options.dotsOptions.color,
       additionalRotation: 0,
@@ -244,11 +246,15 @@ export default class QRSVG {
 
       if (options.cornersSquareOptions?.gradient || options.cornersSquareOptions?.color) {
         cornersSquareClipPath = document.createElementNS("http://www.w3.org/2000/svg", "clipPath");
-        cornersSquareClipPath.setAttribute("id", `clip-path-corners-square-color-${column}-${row}`);
+        cornersSquareClipPath.setAttribute(
+          "id",
+          `clip-path-corners-square-color-${column}-${row}-${options.id || "1"}`
+        );
         this._defs.appendChild(cornersSquareClipPath);
         this._cornersSquareClipPath = this._cornersDotClipPath = cornersDotClipPath = cornersSquareClipPath;
 
         this._createColor({
+          id: options.id,
           options: options.cornersSquareOptions?.gradient,
           color: options.cornersSquareOptions?.color,
           additionalRotation: rotation,
@@ -293,11 +299,12 @@ export default class QRSVG {
 
       if (options.cornersDotOptions?.gradient || options.cornersDotOptions?.color) {
         cornersDotClipPath = document.createElementNS("http://www.w3.org/2000/svg", "clipPath");
-        cornersDotClipPath.setAttribute("id", `clip-path-corners-dot-color-${column}-${row}`);
+        cornersDotClipPath.setAttribute("id", `clip-path-corners-dot-color-${column}-${row}-${options.id || "1"}`);
         this._defs.appendChild(cornersDotClipPath);
         this._cornersDotClipPath = cornersDotClipPath;
 
         this._createColor({
+          id: options.id,
           options: options.cornersDotOptions?.gradient,
           color: options.cornersDotOptions?.color,
           additionalRotation: rotation,
@@ -393,6 +400,7 @@ export default class QRSVG {
   }
 
   _createColor({
+    id,
     options,
     color,
     additionalRotation,
@@ -402,6 +410,7 @@ export default class QRSVG {
     width,
     name
   }: {
+    id?: string;
     options?: Gradient;
     color?: string;
     additionalRotation: number;
@@ -417,7 +426,7 @@ export default class QRSVG {
     rect.setAttribute("y", String(y));
     rect.setAttribute("height", String(height));
     rect.setAttribute("width", String(width));
-    rect.setAttribute("clip-path", `url('#clip-path-${name}')`);
+    rect.setAttribute("clip-path", `url('#clip-path-${name}-${id || "1"}')`);
 
     if (options) {
       let gradient: SVGElement;
